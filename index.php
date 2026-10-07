@@ -70,12 +70,17 @@ $courses = [
 <body> 
   <header>
     <nav aria-label="Navigasi utama"> <a href="index.php"> <strong><?= htmlspecialchars($siteName) ?></strong> </a> 
-    <a href="index.php"><strong>KursusKu</strong></a>
-    <a href="registration.php">Daftar Kursus</a>
+    <a href="index.php"><strong>Beranda</strong></a>
     <a href="#keunggulan">Keunggulan</a>
     <a href="#katalog">Katalog</a>
-    <a href="#alur">Cara Daftar</a> 
-    <a href="#kontak">Kontak</a> </nav>
+    <a href="#alur">Cara Daftar</a>
+    <a href="registration.php">From P5</a> 
+    <a href="register.php">Daftar P6</a>
+    <a href="history.php">history</a>
+    <a href="#kontak">Kontak</a>
+    <a href="test-matriks.php">Test Matrix</a>
+   </nav>
+
   </header>
   <link rel="stylesheet" href="assets/css/style.css">
   <main>

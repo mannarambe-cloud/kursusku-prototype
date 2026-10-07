@@ -1,0 +1,38 @@
+[
+    {
+        "id": "reg_6ac52424e4cd4",
+        "created_at": "2026-10-06 16:39:00",
+        "name": "manna wassalwa rambe",
+        "email": "mannarambe@gmail.com",
+        "course_name": "PHP Dasar",
+        "participant_type": "mahasiswa",
+        "learning_mode": "Tatap Muka",
+        "package_count": 1,
+        "interests": [
+            "Database"
+        ],
+        "notes": "semangat diriku",
+        "gross_total": 400000,
+        "discount_percent": 20,
+        "discount_amount": 80000,
+        "final_total": 320000
+    },
+    {
+        "id": "reg_6ac524c3944fd",
+        "created_at": "2026-10-06 16:41:39",
+        "name": "manna wassalwa rambe",
+        "email": "mannarambe@gmail.com",
+        "course_name": "PHP Dasar",
+        "participant_type": "mahasiswa",
+        "learning_mode": "Tatap Muka",
+        "package_count": 1,
+        "interests": [
+            "Database"
+        ],
+        "notes": "semangat untuk diriku",
+        "gross_total": 400000,
+        "discount_percent": 20,
+        "discount_amount": 80000,
+        "final_total": 320000
+    }
+]
