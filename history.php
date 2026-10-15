@@ -1,34 +1,43 @@
 <?php
+declare(strict_types=1);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 require_once __DIR__ . '/helpers.php';
 
-// Cadangan jika e() tidak ada di helpers.php
+// Cadangan jika e() / rupiah() belum ada di helpers.php
 if (!function_exists('e')) {
-    function e($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); }
+    function e($v): string
+    {
+        return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
+    }
 }
 
-// Cadangan jika rupiah() tidak ada di helpers.php
 if (!function_exists('rupiah')) {
-    function rupiah($angka)
+    function rupiah($angka): string
     {
-        if (function_exists('formatRupiah')) {
-            return formatRupiah($angka);
-        }
         return 'Rp ' . number_format((int) $angka, 0, ',', '.');
     }
 }
 
-$dummy = [
+// Data riwayat dummy (sumber data untuk soal 25)
+$registrations = [
     ['name' => 'Alya',  'course' => 'Web Dasar',     'total' => 160000],
     ['name' => 'Bima',  'course' => 'PHP Dasar',     'total' => 212500],
     ['name' => 'Citra', 'course' => 'Laravel Dasar', 'total' => 350000],
 ];
-$dummyCount = count($dummy);
-$baru       = isset($_SESSION['history']) && is_array($_SESSION['history']) ? $_SESSION['history'] : [];
-$history    = array_merge($dummy, array_values($baru));
-$success    = isset($_GET['success']);
+$dummyCount = count($registrations);
+
+// Data baru dari session (diisi setelah pendaftaran diproses)
+$baru = (isset($_SESSION['history']) && is_array($_SESSION['history']))
+    ? $_SESSION['history']
+    : [];
+
+// Gabungan dummy + data baru
+$history = array_merge($registrations, array_values($baru));
+$success = isset($_GET['success']);
 ?>
 <!doctype html>
 <html lang="id">
@@ -41,22 +50,22 @@ $success    = isset($_GET['success']);
 <body>
 
 <header class="site-header">
-  <div class="nav-wrap">
-    <a class="brand" href="index.php">KursusKu UIN</a>
-  </div>
-  <nav aria-label="Navigasi utama">
-    <a href="index.php">Beranda</a>
-    <a href="register.php">Daftar kursus</a>
-    <a href="history.php" class="active">History</a>
-  </nav>
+    <div class="nav-wrap">
+        <a class="brand" href="index.php">KursusKu UIN</a>
+        <nav aria-label="Navigasi utama">
+            <a href="index.php">Beranda</a>
+            <a href="register.php">Daftar Kursus</a>
+            <a href="history.php" class="active">History</a>
+        </nav>
+    </div>
 </header>
 
 <main>
-    <div class="page-intro">
+    <section class="page-intro">
         <span class="eyebrow">Riwayat</span>
         <h1>History Pendaftaran</h1>
         <p>Daftar pendaftaran kursus, termasuk pendaftaran yang baru Anda buat.</p>
-    </div>
+    </section>
 
     <?php if ($success): ?>
         <div class="alert alert--success">
@@ -66,6 +75,7 @@ $success    = isset($_GET['success']);
 
     <div class="card">
         <p class="muted">Total: <b><?= count($history) ?></b> pendaftaran</p>
+
         <div class="table-wrap">
             <table class="table">
                 <thead>
@@ -77,7 +87,7 @@ $success    = isset($_GET['success']);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($registration as $index => $item): ?>
+                 <?php foreach ($registrations as $index => $item): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td>
