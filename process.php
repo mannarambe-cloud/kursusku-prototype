@@ -1,5 +1,7 @@
 <?php
-ob_start();                       // cegah error "headers already sent"
+declare(strict_types=1);
+
+ob_start(); // cegah error "headers already sent"
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,10 +10,16 @@ require_once __DIR__ . '/data.php';
 require_once __DIR__ . '/helpers.php';
 
 if (!function_exists('e')) {
-    function e($v) { return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8'); }
+    function e($v): string
+    {
+        return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
+    }
 }
 if (!function_exists('formatRupiah')) {
-    function formatRupiah($angka) { return 'Rp ' . number_format((int) $angka, 0, ',', '.'); }
+    function formatRupiah($angka): string
+    {
+        return 'Rp ' . number_format((int) $angka, 0, ',', '.');
+    }
 }
 
 $errors = [];
@@ -20,7 +28,7 @@ $result = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* ===== Konfigurasi ===== */
-    $diskonTipe = ['mahasiswa' => 20, 'guru' => 10, 'umum' => 0];   // persen
+    $diskonTipe = ['mahasiswa' => 20, 'guru' => 10, 'umum' => 0]; // persen
     $labelTipe  = ['mahasiswa' => 'Mahasiswa', 'guru' => 'Guru', 'umum' => 'Umum'];
     $labelMode  = ['offline' => 'Tatap muka', 'online' => 'Online', 'hybrid' => 'Hybrid'];
 
@@ -32,34 +40,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mode      = trim($_POST['learning_mode'] ?? '');
     $packages  = (int) ($_POST['package_count'] ?? 0);
     $notes     = trim($_POST['notes'] ?? '');
-    $interests = isset($_POST['interests']) && is_array($_POST['interests']) ? $_POST['interests'] : [];
+    $interests = (isset($_POST['interests']) && is_array($_POST['interests'])) ? $_POST['interests'] : [];
 
     /* ===== Validasi ===== */
-    if (strlen($name) < 3)                          { $errors[] = 'Nama lengkap minimal 3 karakter.'; }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { $errors[] = 'Format email tidak valid.'; }
+    if (mb_strlen($name) < 3) {
+        $errors[] = 'Nama lengkap minimal 3 karakter.';
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Format email tidak valid.';
+    }
 
     $course = null;
     foreach ($courses as $c) {
-        if ($c['code'] === $code) { $course = $c; break; }
+        if ($c['code'] === $code) {
+            $course = $c;
+            break;
+        }
     }
-    if (!$course)                        { $errors[] = 'Kursus belum dipilih atau tidak ditemukan.'; }
-    if (!isset($diskonTipe[$type]))      { $errors[] = 'Tipe peserta belum dipilih.'; }
-    if (!isset($labelMode[$mode]))       { $errors[] = 'Metode belajar belum dipilih.'; }
-    if ($packages < 1 || $packages > 3)  { $errors[] = 'Jumlah paket harus antara 1 sampai 3.'; }
-    if (strlen($notes) > 300)            { $errors[] = 'Catatan maksimal 300 karakter.'; }
+    if (!$course) {
+        $errors[] = 'Kursus belum dipilih atau tidak ditemukan.';
+    }
+    if (!isset($diskonTipe[$type])) {
+        $errors[] = 'Tipe peserta belum dipilih.';
+    }
+    if (!isset($labelMode[$mode])) {
+        $errors[] = 'Metode belajar belum dipilih.';
+    }
+    if ($packages < 1 || $packages > 3) {
+        $errors[] = 'Jumlah paket harus antara 1 sampai 3.';
+    }
+    if (mb_strlen($notes) > 300) {
+        $errors[] = 'Catatan maksimal 300 karakter.';
+    }
 
-    /* Minat: hanya yang ada di daftar resmi (kalau $interestOptions tersedia) */
+    /* Minat: hanya yang ada di daftar resmi (jika $interestOptions tersedia) */
     $minatLabel = [];
     foreach ($interests as $v) {
         if (isset($interestOptions) && is_array($interestOptions)) {
-            if (isset($interestOptions[$v])) { $minatLabel[] = $interestOptions[$v]; }
+            if (isset($interestOptions[$v])) {
+                $minatLabel[] = $interestOptions[$v];
+            }
         } else {
             $minatLabel[] = (string) $v;
         }
     }
 
+    /* ===== Error validasi: kirim HTTP 422 (soal 28) ===== */
+    if ($errors !== []) {
+        http_response_code(422);
+    }
+
     /* ===== Hitung & simpan ===== */
-    if (!$errors) {
+    if ($errors === []) {
         $subtotal = (int) $course['fee'] * $packages;
         $persen   = $diskonTipe[$type];
         $diskon   = (int) round($subtotal * $persen / 100);
@@ -86,8 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 1) simpan ke history (kunci name, course, total dibaca history.php)
         $_SESSION['history'][] = $result;
 
-        // 2) simpan hasil terakhir lalu buka ulang halaman ini lewat GET
-        //    (supaya kalau di-refresh data tidak tersimpan dobel). TIDAK pindah ke history.
+        // 2) simpan hasil terakhir, lalu buka ulang halaman ini lewat GET
+        //    (supaya refresh tidak menyimpan data dobel)
         $_SESSION['last_result'] = $result;
         header('Location: process.php');
         exit;
@@ -134,12 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <header class="site-header">
   <div class="nav-wrap">
     <a class="brand" href="index.php">KursusKu UIN</a>
+    <nav aria-label="Navigasi utama">
+      <a href="index.php">Beranda</a>
+      <a href="register.php" class="active">Daftar Kursus</a>
+      <a href="history.php">History</a>
+    </nav>
   </div>
-  <nav aria-label="Navigasi utama">
-    <a href="index.php">Beranda</a>
-    <a href="register.php" class="active">Daftar kursus</a>
-    <a href="history.php">History</a>
-  </nav>
 </header>
 
 <main>
