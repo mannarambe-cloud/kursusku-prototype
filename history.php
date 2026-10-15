@@ -77,7 +77,7 @@ $success    = isset($_GET['success']);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($history as $index => $item): ?>
+                    <?php foreach ($registration as $index => $item): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td>
