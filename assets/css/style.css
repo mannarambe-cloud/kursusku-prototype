@@ -1995,3 +1995,22 @@ code {
         border-radius: 18px;
     }
 }
+
+/* ===== Halaman Fee Tests ===== */
+.utility-card.wide-card {
+    max-width: 1000px;
+}
+
+.test-summary {
+    font-size: 1.1rem !important;
+    color: var(--text) !important;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    margin: 20px 0 8px;
+}
+
+.table-wrap .test-table {
+    min-width: 720px;
+}

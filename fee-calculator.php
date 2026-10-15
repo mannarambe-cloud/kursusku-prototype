@@ -145,7 +145,8 @@ function rp(int $angka): string
                 <tr><th>Komponen</th><th>Nilai</th></tr>
             </thead>
             <tbody>
-                <tr><td>Biaya per peserta</td><td><?= rp($fee) ?></td></tr>
+                <tr><td>Biaya per peserta</td>
+                <td><?= number_format($fee, 0, ',' '.') ?></td>
                 <tr><td>Jumlah peserta</td><td><?= $participantCount ?> orang</td></tr>
                 <tr><td>Subtotal</td><td><?= rp($subtotal) ?></td></tr>
                 <tr class="discount"><td>Diskon (<?= $discountPercent ?>%)</td><td>- <?= rp($discount) ?></td></tr>
