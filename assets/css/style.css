@@ -2014,3 +2014,43 @@ code {
 .table-wrap .test-table {
     min-width: 720px;
 }
+/* ===== Tabel & output halaman test ===== */
+.test-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+.test-table th {
+    padding: 14px 16px;
+    background: var(--navy);
+    color: #fff;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.test-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eef0f6;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.test-table tbody tr:last-child td { border-bottom: none; }
+.test-table tbody tr:nth-child(even) { background: #f8f9fd; }
+
+.utility-card pre {
+    margin: 0 0 16px;
+    padding: 16px 20px;
+    background: var(--accent-soft);
+    color: var(--navy-dark);
+    border-radius: 12px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.95rem;
+    overflow-x: auto;
+}
